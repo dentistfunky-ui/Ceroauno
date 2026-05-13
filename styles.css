@@ -620,6 +620,13 @@ section {
   transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.showcase-crop img {
+  width: 110%;
+  height: 110%;
+  margin: -5%;
+  object-fit: cover;
+}
+
 .showcase-item:hover img {
   transform: scale(1.05);
 }
@@ -1262,6 +1269,15 @@ img.lightbox-trigger {
     display: none;
   }
 
+  .nav-menu.active .nav-links,
+  .nav-menu.active .nav-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
   .nav-menu.active {
     position: absolute;
     top: 100%;
@@ -1301,6 +1317,11 @@ img.lightbox-trigger {
   .showcase-grid,
   .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-content,
+  .doctor-content {
+    order: -1;
   }
 
   .about-image img {
