@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Using Intersection Observer to trigger fade-in animations
     const observerOptions = {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.15 // Trigger when 15% of the element is visible
+        rootMargin: '0px 0px -30px 0px',
+        threshold: 0.05 // Lowered threshold so taller elements animate reliably
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
@@ -67,6 +67,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // Select all elements with the 'fade-in' class
     const fadeElements = document.querySelectorAll('.fade-in');
     fadeElements.forEach(el => {
-        observer.observe(el);
+        // Fallback: if already in viewport on load, show immediately
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+            el.classList.add('appear');
+        } else {
+            observer.observe(el);
+        }
     });
+
+    // 4. Lightbox Logic
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    
+    if (lightbox && lightboxImg && lightboxClose) {
+        // Select all images except the lightbox image itself
+        const allImages = document.querySelectorAll('img:not(.lightbox-content)');
+        
+        allImages.forEach(img => {
+            // Make image look clickable
+            img.classList.add('lightbox-trigger');
+            
+            img.addEventListener('click', () => {
+                lightbox.style.display = 'flex';
+                // Small delay to allow display:flex to apply before adding active class for animations if needed
+                setTimeout(() => {
+                    lightbox.classList.add('active');
+                }, 10);
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt || 'Full size image';
+            });
+        });
+        
+        // Close modal
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            lightbox.style.display = 'none';
+        });
+        
+        // Close when clicking outside image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target !== lightboxImg) {
+                lightbox.classList.remove('active');
+                lightbox.style.display = 'none';
+            }
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+                lightbox.classList.remove('active');
+                lightbox.style.display = 'none';
+            }
+        });
+    }
 });
